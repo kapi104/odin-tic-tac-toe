@@ -1,4 +1,5 @@
 let currentPlayer
+let test = true;
 
 const module = (() => {
 
@@ -35,22 +36,23 @@ const module = (() => {
     
     
     const getCurrentPlayer = function() {
-      currentPlayer = playerOne;
+      if (test == true) {
+        currentPlayer = playerOne;
+        test = false;
+      }
     }()
 
 
 
-    const switchPlayers = (mark) => {
-      // console.log(currentPlayer.getName());
-      if (currentPlayer == playerOne) {
-        currentPlayer = playerTwo
-        console.log(currentPlayer.getMark());
-        console.log(currentPlayer.getName());
-        }
-      //    else {
-      //   currentPlayer = playerOne
-      //   console.log(currentPlayer.getMark());
-      // }
+    const switchPlayers = () => {
+      if (currentPlayer.getName() == 'Player one') {
+        currentPlayer = players[1]
+        // console.log('if1');
+      }
+      else if (currentPlayer.getName() == 'Player two'){
+        currentPlayer = players[0]
+        // console.log('if2');
+      }
     }
 
     const clickListener = function () {
@@ -67,25 +69,25 @@ const module = (() => {
         column: field.dataset.column
       }
       
-      console.log(currentPlayer.getName());
       changeMark(cords.row, cords.column, currentPlayer.getMark())
       module.gameController().switchPlayers()
     }
 
     
+    const changeMark = (row, column, turn) => {
+      if (module.board[row][column] === 0) {
+        let targetRow = Array.from(document.querySelectorAll(`[data-row="${row}"]`));
+        
+        targetRow.forEach(field => {
+          if (field.dataset.column == column) field.innerHTML = turn;
+        })
+        
+      } 
+    }
+
     return {players, clickListener, switchPlayers, getCurrentPlayer}
   }
 
-  const changeMark = (row, column, turn) => {
-    if (module.board[row][column] === 0) {
-      let targetRow = Array.from(document.querySelectorAll(`[data-row="${row}"]`));
-      
-      targetRow.forEach(field => {
-        if (field.dataset.column == column) field.innerHTML = turn;
-      })
-      
-    } 
-  }
   
   
   return {gameController, board};
@@ -99,5 +101,4 @@ const player = (name, mark) => {
   return {getName, getMark};
 }
 
-// currentPlayer = module.gameController().getCurrentPlayer();
 module.gameController().clickListener()
