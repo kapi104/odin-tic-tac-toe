@@ -1,8 +1,6 @@
-let currentPlayer
-let test = true;
-
 const module = (() => {
-
+  let currentPlayer
+  let test = true;
   
   const board = [];
 
@@ -20,8 +18,6 @@ const module = (() => {
       }
 
   }
-
-  return board;
   }();
 
   
@@ -47,16 +43,18 @@ const module = (() => {
     const switchPlayers = () => {
       if (currentPlayer.getName() == 'Player one') {
         currentPlayer = players[1]
-        // console.log('if1');
       }
       else if (currentPlayer.getName() == 'Player two'){
         currentPlayer = players[0]
-        // console.log('if2');
       }
     }
 
+    const getFields = () => {
+      return document.querySelectorAll('.field');
+    }
+
     const clickListener = function () {
-      const fields = document.querySelectorAll('.field');
+      const fields = getFields();
 
       fields.forEach(field => {
         field.addEventListener('click', clickEvent, false);
@@ -71,6 +69,7 @@ const module = (() => {
       
       changeMark(cords.row, cords.column, currentPlayer.getMark())
       module.gameController().switchPlayers()
+      document.querySelector('h3').innerText = 'turn: ' + currentPlayer.getMark()
     }
 
     
@@ -85,20 +84,28 @@ const module = (() => {
       } 
     }
 
-    return {players, clickListener, switchPlayers, getCurrentPlayer}
+    return {players, clickListener, switchPlayers, getCurrentPlayer, getFields}
+  }
+
+  const newGame = () => {
+    console.log(document.querySelector('button'));
+    document.querySelector('button').addEventListener('click', () => {
+      let fields = gameController().getFields();
+      fields.forEach(field => field.innerHTML = '');
+    }, false)
   }
 
   
   
-  return {gameController, board};
+  return {gameController, board, newGame};
 })();
 
 const player = (name, mark) => {
   const getName = () => name;
   const getMark = () => mark;
   
-  
   return {getName, getMark};
 }
 
 module.gameController().clickListener()
+module.newGame()
